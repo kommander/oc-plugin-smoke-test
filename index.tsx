@@ -677,6 +677,9 @@ const slot = (input: Cfg): TuiSlotPlugin => ({
             <text fg={skin.muted}>
               <span style={{ fg: skin.accent }}>{input.label}</span> {text}
             </text>
+            <text fg={skin.muted}>
+              NPM Version
+            </text>
           </box>
         </box>
       )

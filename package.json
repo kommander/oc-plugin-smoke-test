@@ -1,0 +1,23 @@
+{
+  "name": "oc-plugin-smoke-test",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./index.tsx"
+  },
+  "peerDependencies": {
+    "@opencode-ai/plugin": "0.0.0-snapshot-tui-plugins-202603190008",
+    "@opentui/core": "0.0.0-20260318-39211c40",
+    "@opentui/solid": "0.0.0-20260318-39211c40",
+    "solid-js": "^1.9.11"
+  },
+  "devDependencies": {
+    "@opencode-ai/plugin": "1.2.24",
+    "@opentui/core": "0.0.0-20260318-39211c40",
+    "@opentui/solid": "0.0.0-20260318-39211c40",
+    "solid-js": "1.9.11",
+    "@types/bun": "latest",
+    "typescript": "^5"
+  }
+}

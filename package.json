@@ -5,6 +5,9 @@
   "exports": {
     ".": "./index.tsx"
   },
+  "oc-plugin": [
+    "tui"
+  ],
   "peerDependencies": {
     "@opencode-ai/plugin": "0.0.0-snapshot-tui-plugins-202603231534",
     "@opentui/core": "0.1.90",

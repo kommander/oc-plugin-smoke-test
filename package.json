@@ -1,9 +1,13 @@
 {
   "name": "oc-plugin-smoke-test",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "exports": {
-    ".": "./index.tsx"
+    ".": "./index.tsx",
+    "./tui": "./index.tsx"
+  },
+  "engines": {
+    "opencode": ">=1.3.0"
   },
   "oc-plugin": [
     "tui"

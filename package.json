@@ -13,7 +13,7 @@
     "tui"
   ],
   "peerDependencies": {
-    "@opencode-ai/plugin": "0.0.0-snapshot-tui-plugins-202603231534",
+    "@opencode-ai/plugin": "0.0.0-snapshot-tui-plugins-202603262320",
     "@opentui/core": "0.1.90",
     "@opentui/solid": "0.1.90",
     "solid-js": "^1.9.11"

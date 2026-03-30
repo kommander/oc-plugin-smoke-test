@@ -1048,7 +1048,7 @@ const tui: TuiPlugin = async (api, options, meta) => {
 };
 
 const plugin: TuiPluginModule & { id: string } = {
-  id: "tui-smoke",
+  id: "oc-plugin-smoke-test",
   tui,
 };
 

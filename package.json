@@ -13,15 +13,15 @@
     "tui"
   ],
   "peerDependencies": {
-    "@opencode-ai/plugin": "0.0.0-snapshot-tui-plugins-202603271347",
-    "@opentui/core": "0.1.91",
-    "@opentui/solid": "0.1.91",
+    "@opencode-ai/plugin": "^1.3.7",
+    "@opentui/core": ">=0.1.92",
+    "@opentui/solid": ">=0.1.92",
     "solid-js": "^1.9.11"
   },
   "devDependencies": {
-    "@opencode-ai/plugin": "0.0.0-snapshot-tui-plugins-202603271347",
-    "@opentui/core": "0.1.91",
-    "@opentui/solid": "0.1.91",
+    "@opencode-ai/plugin": "^1.3.7",
+    "@opentui/core": "0.1.92",
+    "@opentui/solid": "0.1.92",
     "solid-js": "1.9.11",
     "@types/bun": "latest",
     "typescript": "^5"

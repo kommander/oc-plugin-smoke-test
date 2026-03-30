@@ -1,6 +1,6 @@
 /** @jsxImportSource @opentui/solid */
-import { useKeyboard, useTerminalDimensions } from "@opentui/solid"
-import { RGBA, VignetteEffect } from "@opentui/core"
+import { useKeyboard, useTerminalDimensions, type JSX } from "@opentui/solid";
+import { RGBA, VignetteEffect } from "@opentui/core";
 import type {
   TuiKeybindSet,
   TuiPlugin,
@@ -8,9 +8,9 @@ import type {
   TuiPluginMeta,
   TuiPluginModule,
   TuiSlotPlugin,
-} from "@opencode-ai/plugin/tui"
+} from "@opencode-ai/plugin/tui";
 
-const tabs = ["overview", "counter", "help"]
+const tabs = ["overview", "counter", "help"];
 const bind = {
   modal: "ctrl+shift+m",
   screen: "ctrl+shift+o",
@@ -30,44 +30,44 @@ const bind = {
   local_push: "enter,return",
   local_close: "q,backspace",
   host: "z",
-}
+};
 
 const pick = (value: unknown, fallback: string) => {
-  if (typeof value !== "string") return fallback
-  if (!value.trim()) return fallback
-  return value
-}
+  if (typeof value !== "string") return fallback;
+  if (!value.trim()) return fallback;
+  return value;
+};
 
 const num = (value: unknown, fallback: number) => {
-  if (typeof value !== "number") return fallback
-  return value
-}
+  if (typeof value !== "number") return fallback;
+  return value;
+};
 
 const rec = (value: unknown) => {
-  if (!value || typeof value !== "object" || Array.isArray(value)) return
-  return Object.fromEntries(Object.entries(value))
-}
+  if (!value || typeof value !== "object" || Array.isArray(value)) return;
+  return Object.fromEntries(Object.entries(value));
+};
 
 type Cfg = {
-  label: string
-  route: string
-  vignette: number
-  keybinds: Record<string, unknown> | undefined
-}
+  label: string;
+  route: string;
+  vignette: number;
+  keybinds: Record<string, unknown> | undefined;
+};
 
 type Route = {
-  modal: string
-  screen: string
-}
+  modal: string;
+  screen: string;
+};
 
 type State = {
-  tab: number
-  count: number
-  source: string
-  note: string
-  selected: string
-  local: number
-}
+  tab: number;
+  count: number;
+  source: string;
+  note: string;
+  selected: string;
+  local: number;
+};
 
 const cfg = (options: Record<string, unknown> | undefined) => {
   return {
@@ -75,33 +75,37 @@ const cfg = (options: Record<string, unknown> | undefined) => {
     route: pick(options?.route, "workspace-smoke"),
     vignette: Math.max(0, num(options?.vignette, 0.35)),
     keybinds: rec(options?.keybinds),
-  }
-}
+  };
+};
 
 const names = (input: Cfg) => {
   return {
     modal: `${input.route}.modal`,
     screen: `${input.route}.screen`,
-  }
-}
+  };
+};
 
-type Keys = TuiKeybindSet
+type Keys = TuiKeybindSet;
 const ui = {
   panel: "#1d1d1d",
   border: "#4a4a4a",
   text: "#f0f0f0",
   muted: "#a5a5a5",
   accent: "#5f87ff",
-}
+};
 
-type Color = RGBA | string
+type Color = RGBA | string;
 
-const ink = (map: Record<string, unknown>, name: string, fallback: string): Color => {
-  const value = map[name]
-  if (typeof value === "string") return value
-  if (value instanceof RGBA) return value
-  return fallback
-}
+const ink = (
+  map: Record<string, unknown>,
+  name: string,
+  fallback: string,
+): Color => {
+  const value = map[name];
+  if (typeof value === "string") return value;
+  if (value instanceof RGBA) return value;
+  return fallback;
+};
 
 const look = (map: Record<string, unknown>) => {
   return {
@@ -111,44 +115,51 @@ const look = (map: Record<string, unknown>) => {
     muted: ink(map, "textMuted", ui.muted),
     accent: ink(map, "primary", ui.accent),
     selected: ink(map, "selectedListItemText", ui.text),
-  }
-}
+  };
+};
 
 const tone = (api: TuiPluginApi) => {
-  return look(api.theme.current)
-}
+  return look(api.theme.current);
+};
 
 type Skin = {
-  panel: Color
-  border: Color
-  text: Color
-  muted: Color
-  accent: Color
-  selected: Color
-}
+  panel: Color;
+  border: Color;
+  text: Color;
+  muted: Color;
+  accent: Color;
+  selected: Color;
+};
 
-const Btn = (props: { txt: string; run: () => void; skin: Skin; on?: boolean }) => {
+const Btn = (props: {
+  txt: string;
+  run: () => void;
+  skin: Skin;
+  on?: boolean;
+}) => {
   return (
     <box
       onMouseUp={() => {
-        props.run()
+        props.run();
       }}
       backgroundColor={props.on ? props.skin.accent : props.skin.border}
       paddingLeft={1}
       paddingRight={1}
     >
-      <text fg={props.on ? props.skin.selected : props.skin.text}>{props.txt}</text>
+      <text fg={props.on ? props.skin.selected : props.skin.text}>
+        {props.txt}
+      </text>
     </box>
-  )
-}
+  );
+};
 
 const parse = (params: Record<string, unknown> | undefined) => {
-  const tab = typeof params?.tab === "number" ? params.tab : 0
-  const count = typeof params?.count === "number" ? params.count : 0
-  const source = typeof params?.source === "string" ? params.source : "unknown"
-  const note = typeof params?.note === "string" ? params.note : ""
-  const selected = typeof params?.selected === "string" ? params.selected : ""
-  const local = typeof params?.local === "number" ? params.local : 0
+  const tab = typeof params?.tab === "number" ? params.tab : 0;
+  const count = typeof params?.count === "number" ? params.count : 0;
+  const source = typeof params?.source === "string" ? params.source : "unknown";
+  const note = typeof params?.note === "string" ? params.note : "";
+  const selected = typeof params?.selected === "string" ? params.selected : "";
+  const local = typeof params?.local === "number" ? params.local : 0;
   return {
     tab: Math.max(0, Math.min(tab, tabs.length - 1)),
     count,
@@ -156,16 +167,16 @@ const parse = (params: Record<string, unknown> | undefined) => {
     note,
     selected,
     local: Math.max(0, local),
-  }
-}
+  };
+};
 
 const current = (api: TuiPluginApi, route: Route) => {
-  const value = api.route.current
-  const ok = Object.values(route).includes(value.name)
-  if (!ok) return parse(undefined)
-  if (!("params" in value)) return parse(undefined)
-  return parse(value.params)
-}
+  const value = api.route.current;
+  const ok = Object.values(route).includes(value.name);
+  if (!ok) return parse(undefined);
+  if (!("params" in value)) return parse(undefined);
+  return parse(value.params);
+};
 
 const opts = [
   {
@@ -183,239 +194,278 @@ const opts = [
     value: 2,
     description: "Switch to help tab",
   },
-]
+];
 
 const host = (api: TuiPluginApi, input: Cfg, skin: Skin) => {
-  api.ui.dialog.setSize("medium")
+  api.ui.dialog.setSize("medium");
   api.ui.dialog.replace(() => (
-    <box paddingBottom={1} paddingLeft={2} paddingRight={2} gap={1} flexDirection="column">
+    <box
+      paddingBottom={1}
+      paddingLeft={2}
+      paddingRight={2}
+      gap={1}
+      flexDirection="column"
+    >
       <text fg={skin.text}>
         <b>{input.label} host overlay</b>
       </text>
-      <text fg={skin.muted}>Using api.ui.dialog stack with built-in backdrop</text>
+      <text fg={skin.muted}>
+        Using api.ui.dialog stack with built-in backdrop
+      </text>
       <text fg={skin.muted}>esc closes · depth {api.ui.dialog.depth}</text>
       <box flexDirection="row" gap={1}>
         <Btn txt="close" run={() => api.ui.dialog.clear()} skin={skin} on />
       </box>
     </box>
-  ))
-}
+  ));
+};
 
 const warn = (api: TuiPluginApi, route: Route, value: State) => {
-  const DialogAlert = api.ui.DialogAlert
-  api.ui.dialog.setSize("medium")
+  const DialogAlert = api.ui.DialogAlert;
+  api.ui.dialog.setSize("medium");
   api.ui.dialog.replace(() => (
     <DialogAlert
       title="Smoke alert"
       message="Testing built-in alert dialog"
-      onConfirm={() => api.route.navigate(route.screen, { ...value, source: "alert" })}
+      onConfirm={() =>
+        api.route.navigate(route.screen, { ...value, source: "alert" })
+      }
     />
-  ))
-}
+  ));
+};
 
 const check = (api: TuiPluginApi, route: Route, value: State) => {
-  const DialogConfirm = api.ui.DialogConfirm
-  api.ui.dialog.setSize("medium")
+  const DialogConfirm = api.ui.DialogConfirm;
+  api.ui.dialog.setSize("medium");
   api.ui.dialog.replace(() => (
     <DialogConfirm
       title="Smoke confirm"
       message="Apply +1 to counter?"
-      onConfirm={() => api.route.navigate(route.screen, { ...value, count: value.count + 1, source: "confirm" })}
-      onCancel={() => api.route.navigate(route.screen, { ...value, source: "confirm-cancel" })}
+      onConfirm={() =>
+        api.route.navigate(route.screen, {
+          ...value,
+          count: value.count + 1,
+          source: "confirm",
+        })
+      }
+      onCancel={() =>
+        api.route.navigate(route.screen, { ...value, source: "confirm-cancel" })
+      }
     />
-  ))
-}
+  ));
+};
 
 const entry = (api: TuiPluginApi, route: Route, value: State) => {
-  const DialogPrompt = api.ui.DialogPrompt
-  api.ui.dialog.setSize("medium")
+  const DialogPrompt = api.ui.DialogPrompt;
+  api.ui.dialog.setSize("medium");
   api.ui.dialog.replace(() => (
     <DialogPrompt
       title="Smoke prompt"
       value={value.note}
       onConfirm={(note) => {
-        api.ui.dialog.clear()
-        api.route.navigate(route.screen, { ...value, note, source: "prompt" })
+        api.ui.dialog.clear();
+        api.route.navigate(route.screen, { ...value, note, source: "prompt" });
       }}
       onCancel={() => {
-        api.ui.dialog.clear()
-        api.route.navigate(route.screen, value)
+        api.ui.dialog.clear();
+        api.route.navigate(route.screen, value);
       }}
     />
-  ))
-}
+  ));
+};
 
 const picker = (api: TuiPluginApi, route: Route, value: State) => {
-  const DialogSelect = api.ui.DialogSelect
-  api.ui.dialog.setSize("medium")
+  const DialogSelect = api.ui.DialogSelect;
+  api.ui.dialog.setSize("medium");
   api.ui.dialog.replace(() => (
     <DialogSelect
       title="Smoke select"
       options={opts}
       current={value.tab}
       onSelect={(item) => {
-        api.ui.dialog.clear()
+        api.ui.dialog.clear();
         api.route.navigate(route.screen, {
           ...value,
           tab: typeof item.value === "number" ? item.value : value.tab,
           selected: item.title,
           source: "select",
-        })
+        });
       }}
     />
-  ))
-}
+  ));
+};
 
 const Screen = (props: {
-  api: TuiPluginApi
-  input: Cfg
-  route: Route
-  keys: Keys
-  meta: TuiPluginMeta
-  params?: Record<string, unknown>
+  api: TuiPluginApi;
+  input: Cfg;
+  route: Route;
+  keys: Keys;
+  meta: TuiPluginMeta;
+  params?: Record<string, unknown>;
 }) => {
-  const dim = useTerminalDimensions()
-  const value = parse(props.params)
-  const skin = tone(props.api)
+  const dim = useTerminalDimensions();
+  const value = parse(props.params);
+  const skin = tone(props.api);
   const set = (local: number, base?: State) => {
-    const next = base ?? current(props.api, props.route)
-    props.api.route.navigate(props.route.screen, { ...next, local: Math.max(0, local), source: "local" })
-  }
+    const next = base ?? current(props.api, props.route);
+    props.api.route.navigate(props.route.screen, {
+      ...next,
+      local: Math.max(0, local),
+      source: "local",
+    });
+  };
   const push = (base?: State) => {
-    const next = base ?? current(props.api, props.route)
-    set(next.local + 1, next)
-  }
+    const next = base ?? current(props.api, props.route);
+    set(next.local + 1, next);
+  };
   const open = () => {
-    const next = current(props.api, props.route)
-    if (next.local > 0) return
-    set(1, next)
-  }
+    const next = current(props.api, props.route);
+    if (next.local > 0) return;
+    set(1, next);
+  };
   const pop = (base?: State) => {
-    const next = base ?? current(props.api, props.route)
-    const local = Math.max(0, next.local - 1)
-    set(local, next)
-  }
+    const next = base ?? current(props.api, props.route);
+    const local = Math.max(0, next.local - 1);
+    set(local, next);
+  };
   const show = () => {
     setTimeout(() => {
-      open()
-    }, 0)
-  }
+      open();
+    }, 0);
+  };
   useKeyboard((evt) => {
-    if (props.api.route.current.name !== props.route.screen) return
-    const next = current(props.api, props.route)
+    if (props.api.route.current.name !== props.route.screen) return;
+    const next = current(props.api, props.route);
     if (props.api.ui.dialog.open) {
       if (props.keys.match("dialog_close", evt)) {
-        evt.preventDefault()
-        evt.stopPropagation()
-        props.api.ui.dialog.clear()
-        return
+        evt.preventDefault();
+        evt.stopPropagation();
+        props.api.ui.dialog.clear();
+        return;
       }
-      return
+      return;
     }
 
     if (next.local > 0) {
       if (evt.name === "escape" || props.keys.match("local_close", evt)) {
-        evt.preventDefault()
-        evt.stopPropagation()
-        pop(next)
-        return
+        evt.preventDefault();
+        evt.stopPropagation();
+        pop(next);
+        return;
       }
 
       if (props.keys.match("local_push", evt)) {
-        evt.preventDefault()
-        evt.stopPropagation()
-        push(next)
-        return
+        evt.preventDefault();
+        evt.stopPropagation();
+        push(next);
+        return;
       }
-      return
+      return;
     }
 
     if (props.keys.match("home", evt)) {
-      evt.preventDefault()
-      evt.stopPropagation()
-      props.api.route.navigate("home")
-      return
+      evt.preventDefault();
+      evt.stopPropagation();
+      props.api.route.navigate("home");
+      return;
     }
 
     if (props.keys.match("left", evt)) {
-      evt.preventDefault()
-      evt.stopPropagation()
-      props.api.route.navigate(props.route.screen, { ...next, tab: (next.tab - 1 + tabs.length) % tabs.length })
-      return
+      evt.preventDefault();
+      evt.stopPropagation();
+      props.api.route.navigate(props.route.screen, {
+        ...next,
+        tab: (next.tab - 1 + tabs.length) % tabs.length,
+      });
+      return;
     }
 
     if (props.keys.match("right", evt)) {
-      evt.preventDefault()
-      evt.stopPropagation()
-      props.api.route.navigate(props.route.screen, { ...next, tab: (next.tab + 1) % tabs.length })
-      return
+      evt.preventDefault();
+      evt.stopPropagation();
+      props.api.route.navigate(props.route.screen, {
+        ...next,
+        tab: (next.tab + 1) % tabs.length,
+      });
+      return;
     }
 
     if (props.keys.match("up", evt)) {
-      evt.preventDefault()
-      evt.stopPropagation()
-      props.api.route.navigate(props.route.screen, { ...next, count: next.count + 1 })
-      return
+      evt.preventDefault();
+      evt.stopPropagation();
+      props.api.route.navigate(props.route.screen, {
+        ...next,
+        count: next.count + 1,
+      });
+      return;
     }
 
     if (props.keys.match("down", evt)) {
-      evt.preventDefault()
-      evt.stopPropagation()
-      props.api.route.navigate(props.route.screen, { ...next, count: next.count - 1 })
-      return
+      evt.preventDefault();
+      evt.stopPropagation();
+      props.api.route.navigate(props.route.screen, {
+        ...next,
+        count: next.count - 1,
+      });
+      return;
     }
 
     if (props.keys.match("modal", evt)) {
-      evt.preventDefault()
-      evt.stopPropagation()
-      props.api.route.navigate(props.route.modal, next)
-      return
+      evt.preventDefault();
+      evt.stopPropagation();
+      props.api.route.navigate(props.route.modal, next);
+      return;
     }
 
     if (props.keys.match("local", evt)) {
-      evt.preventDefault()
-      evt.stopPropagation()
-      open()
-      return
+      evt.preventDefault();
+      evt.stopPropagation();
+      open();
+      return;
     }
 
     if (props.keys.match("host", evt)) {
-      evt.preventDefault()
-      evt.stopPropagation()
-      host(props.api, props.input, skin)
-      return
+      evt.preventDefault();
+      evt.stopPropagation();
+      host(props.api, props.input, skin);
+      return;
     }
 
     if (props.keys.match("alert", evt)) {
-      evt.preventDefault()
-      evt.stopPropagation()
-      warn(props.api, props.route, next)
-      return
+      evt.preventDefault();
+      evt.stopPropagation();
+      warn(props.api, props.route, next);
+      return;
     }
 
     if (props.keys.match("confirm", evt)) {
-      evt.preventDefault()
-      evt.stopPropagation()
-      check(props.api, props.route, next)
-      return
+      evt.preventDefault();
+      evt.stopPropagation();
+      check(props.api, props.route, next);
+      return;
     }
 
     if (props.keys.match("prompt", evt)) {
-      evt.preventDefault()
-      evt.stopPropagation()
-      entry(props.api, props.route, next)
-      return
+      evt.preventDefault();
+      evt.stopPropagation();
+      entry(props.api, props.route, next);
+      return;
     }
 
     if (props.keys.match("select", evt)) {
-      evt.preventDefault()
-      evt.stopPropagation()
-      picker(props.api, props.route, next)
+      evt.preventDefault();
+      evt.stopPropagation();
+      picker(props.api, props.route, next);
     }
-  })
+  });
 
   return (
-    <box width={dim().width} height={dim().height} backgroundColor={skin.panel} position="relative">
+    <box
+      width={dim().width}
+      height={dim().height}
+      backgroundColor={skin.panel}
+      position="relative"
+    >
       <box
         flexDirection="column"
         width="100%"
@@ -425,7 +475,11 @@ const Screen = (props: {
         paddingLeft={2}
         paddingRight={2}
       >
-        <box flexDirection="row" justifyContent="space-between" paddingBottom={1}>
+        <box
+          flexDirection="row"
+          justifyContent="space-between"
+          paddingBottom={1}
+        >
           <text fg={skin.text}>
             <b>{props.input.label} screen</b>
             <span style={{ fg: skin.muted }}> plugin route</span>
@@ -435,15 +489,20 @@ const Screen = (props: {
 
         <box flexDirection="row" gap={1} paddingBottom={1}>
           {tabs.map((item, i) => {
-            const on = value.tab === i
+            const on = value.tab === i;
             return (
               <Btn
                 txt={item}
-                run={() => props.api.route.navigate(props.route.screen, { ...value, tab: i })}
+                run={() =>
+                  props.api.route.navigate(props.route.screen, {
+                    ...value,
+                    tab: i,
+                  })
+                }
                 skin={skin}
                 on={on}
               />
-            )
+            );
           })}
         </box>
 
@@ -462,14 +521,19 @@ const Screen = (props: {
               <text fg={skin.muted}>plugin state: {props.meta.state}</text>
               <text fg={skin.muted}>
                 first: {props.meta.state === "first" ? "yes" : "no"} · updated:{" "}
-                {props.meta.state === "updated" ? "yes" : "no"} · loads: {props.meta.load_count}
+                {props.meta.state === "updated" ? "yes" : "no"} · loads:{" "}
+                {props.meta.load_count}
               </text>
               <text fg={skin.muted}>plugin source: {props.meta.source}</text>
               <text fg={skin.muted}>source: {value.source}</text>
               <text fg={skin.muted}>note: {value.note || "(none)"}</text>
-              <text fg={skin.muted}>selected: {value.selected || "(none)"}</text>
+              <text fg={skin.muted}>
+                selected: {value.selected || "(none)"}
+              </text>
               <text fg={skin.muted}>local stack depth: {value.local}</text>
-              <text fg={skin.muted}>host stack open: {props.api.ui.dialog.open ? "yes" : "no"}</text>
+              <text fg={skin.muted}>
+                host stack open: {props.api.ui.dialog.open ? "yes" : "no"}
+              </text>
             </box>
           ) : null}
 
@@ -477,7 +541,8 @@ const Screen = (props: {
             <box flexDirection="column" gap={1}>
               <text fg={skin.text}>Counter: {value.count}</text>
               <text fg={skin.muted}>
-                {props.keys.print("up")} / {props.keys.print("down")} change value
+                {props.keys.print("up")} / {props.keys.print("down")} change
+                value
               </text>
             </box>
           ) : null}
@@ -485,30 +550,64 @@ const Screen = (props: {
           {value.tab === 2 ? (
             <box flexDirection="column" gap={1}>
               <text fg={skin.muted}>
-                {props.keys.print("modal")} modal | {props.keys.print("alert")} alert | {props.keys.print("confirm")}{" "}
-                confirm | {props.keys.print("prompt")} prompt | {props.keys.print("select")} select
+                {props.keys.print("modal")} modal | {props.keys.print("alert")}{" "}
+                alert | {props.keys.print("confirm")} confirm |{" "}
+                {props.keys.print("prompt")} prompt |{" "}
+                {props.keys.print("select")} select
               </text>
               <text fg={skin.muted}>
-                {props.keys.print("local")} local stack | {props.keys.print("host")} host stack
+                {props.keys.print("local")} local stack |{" "}
+                {props.keys.print("host")} host stack
               </text>
               <text fg={skin.muted}>
-                local open: {props.keys.print("local_push")} push nested · esc or {props.keys.print("local_close")}{" "}
-                close
+                local open: {props.keys.print("local_push")} push nested · esc
+                or {props.keys.print("local_close")} close
               </text>
-              <text fg={skin.muted}>{props.keys.print("home")} returns home</text>
+              <text fg={skin.muted}>
+                {props.keys.print("home")} returns home
+              </text>
             </box>
           ) : null}
         </box>
 
         <box flexDirection="row" gap={1} paddingTop={1}>
-          <Btn txt="go home" run={() => props.api.route.navigate("home")} skin={skin} />
-          <Btn txt="modal" run={() => props.api.route.navigate(props.route.modal, value)} skin={skin} on />
+          <Btn
+            txt="go home"
+            run={() => props.api.route.navigate("home")}
+            skin={skin}
+          />
+          <Btn
+            txt="modal"
+            run={() => props.api.route.navigate(props.route.modal, value)}
+            skin={skin}
+            on
+          />
           <Btn txt="local overlay" run={show} skin={skin} />
-          <Btn txt="host overlay" run={() => host(props.api, props.input, skin)} skin={skin} />
-          <Btn txt="alert" run={() => warn(props.api, props.route, value)} skin={skin} />
-          <Btn txt="confirm" run={() => check(props.api, props.route, value)} skin={skin} />
-          <Btn txt="prompt" run={() => entry(props.api, props.route, value)} skin={skin} />
-          <Btn txt="select" run={() => picker(props.api, props.route, value)} skin={skin} />
+          <Btn
+            txt="host overlay"
+            run={() => host(props.api, props.input, skin)}
+            skin={skin}
+          />
+          <Btn
+            txt="alert"
+            run={() => warn(props.api, props.route, value)}
+            skin={skin}
+          />
+          <Btn
+            txt="confirm"
+            run={() => check(props.api, props.route, value)}
+            skin={skin}
+          />
+          <Btn
+            txt="prompt"
+            run={() => entry(props.api, props.route, value)}
+            skin={skin}
+          />
+          <Btn
+            txt="select"
+            run={() => picker(props.api, props.route, value)}
+            skin={skin}
+          />
         </box>
       </box>
 
@@ -524,12 +623,12 @@ const Screen = (props: {
         top={0}
         backgroundColor={RGBA.fromInts(0, 0, 0, 160)}
         onMouseUp={() => {
-          pop()
+          pop();
         }}
       >
         <box
           onMouseUp={(evt) => {
-            evt.stopPropagation()
+            evt.stopPropagation();
           }}
           width={60}
           maxWidth={dim().width - 2}
@@ -548,7 +647,8 @@ const Screen = (props: {
           </text>
           <text fg={skin.muted}>Plugin-owned stack depth: {value.local}</text>
           <text fg={skin.muted}>
-            {props.keys.print("local_push")} push nested · {props.keys.print("local_close")} pop/close
+            {props.keys.print("local_push")} push nested ·{" "}
+            {props.keys.print("local_close")} pop/close
           </text>
           <box flexDirection="row" gap={1}>
             <Btn txt="push" run={push} skin={skin} on />
@@ -557,69 +657,90 @@ const Screen = (props: {
         </box>
       </box>
     </box>
-  )
-}
+  );
+};
 
 const Modal = (props: {
-  api: TuiPluginApi
-  input: Cfg
-  route: Route
-  keys: Keys
-  params?: Record<string, unknown>
+  api: TuiPluginApi;
+  input: Cfg;
+  route: Route;
+  keys: Keys;
+  params?: Record<string, unknown>;
 }) => {
-  const Dialog = props.api.ui.Dialog
-  const value = parse(props.params)
-  const skin = tone(props.api)
+  const Dialog = props.api.ui.Dialog;
+  const value = parse(props.params);
+  const skin = tone(props.api);
 
   useKeyboard((evt) => {
-    if (props.api.route.current.name !== props.route.modal) return
+    if (props.api.route.current.name !== props.route.modal) return;
 
     if (props.keys.match("modal_accept", evt)) {
-      evt.preventDefault()
-      evt.stopPropagation()
-      props.api.route.navigate(props.route.screen, { ...value, source: "modal" })
-      return
+      evt.preventDefault();
+      evt.stopPropagation();
+      props.api.route.navigate(props.route.screen, {
+        ...value,
+        source: "modal",
+      });
+      return;
     }
 
     if (props.keys.match("modal_close", evt)) {
-      evt.preventDefault()
-      evt.stopPropagation()
-      props.api.route.navigate("home")
+      evt.preventDefault();
+      evt.stopPropagation();
+      props.api.route.navigate("home");
     }
-  })
+  });
 
   return (
     <box width="100%" height="100%" backgroundColor={skin.panel}>
       <Dialog onClose={() => props.api.route.navigate("home")}>
-        <box paddingBottom={1} paddingLeft={2} paddingRight={2} gap={1} flexDirection="column">
+        <box
+          paddingBottom={1}
+          paddingLeft={2}
+          paddingRight={2}
+          gap={1}
+          flexDirection="column"
+        >
           <text fg={skin.text}>
             <b>{props.input.label} modal</b>
           </text>
           <text fg={skin.muted}>{props.keys.print("modal")} modal command</text>
-          <text fg={skin.muted}>{props.keys.print("screen")} screen command</text>
           <text fg={skin.muted}>
-            {props.keys.print("modal_accept")} opens screen · {props.keys.print("modal_close")} closes
+            {props.keys.print("screen")} screen command
+          </text>
+          <text fg={skin.muted}>
+            {props.keys.print("modal_accept")} opens screen ·{" "}
+            {props.keys.print("modal_close")} closes
           </text>
           <box flexDirection="row" gap={1}>
             <Btn
               txt="open screen"
-              run={() => props.api.route.navigate(props.route.screen, { ...value, source: "modal" })}
+              run={() =>
+                props.api.route.navigate(props.route.screen, {
+                  ...value,
+                  source: "modal",
+                })
+              }
               skin={skin}
               on
             />
-            <Btn txt="cancel" run={() => props.api.route.navigate("home")} skin={skin} />
+            <Btn
+              txt="cancel"
+              run={() => props.api.route.navigate("home")}
+              skin={skin}
+            />
           </box>
         </box>
       </Dialog>
     </box>
-  )
-}
+  );
+};
 
-const home = (input: Cfg): TuiSlotPlugin => ({
+const home = (api: TuiPluginApi, input: Cfg): TuiSlotPlugin => ({
   slots: {
     home_logo(ctx) {
-      const map = ctx.theme.current
-      const skin = look(map)
+      const map = ctx.theme.current;
+      const skin = look(map);
       const art = [
         "                                  $$\\",
         "                                  $$ |",
@@ -629,7 +750,7 @@ const home = (input: Cfg): TuiSlotPlugin => ({
         " \\____$$\\ $$ | $$ | $$ |$$ |  $$ |$$  _$$<  $$   ____|",
         "$$$$$$$  |$$ | $$ | $$ |\\$$$$$$  |$$ | \\$$\\ \\$$$$$$$\\",
         "\\_______/ \\__| \\__| \\__| \\______/ \\__|  \\__| \\_______|",
-      ]
+      ];
       const fill = [
         skin.accent,
         skin.muted,
@@ -639,7 +760,7 @@ const home = (input: Cfg): TuiSlotPlugin => ({
         ink(map, "warning", ui.accent),
         ink(map, "secondary", ui.accent),
         ink(map, "error", ui.accent),
-      ]
+      ];
 
       return (
         <box flexDirection="column">
@@ -647,14 +768,61 @@ const home = (input: Cfg): TuiSlotPlugin => ({
             <text fg={fill[i]}>{line}</text>
           ))}
         </box>
-      )
+      );
     },
-    home_bottom(ctx) {
-      const skin = look(ctx.theme.current)
-      const text = "extra content in the unified home bottom slot"
+    home_prompt(ctx, value) {
+      const skin = look(ctx.theme.current);
+      type Prompt = (props: {
+        workspaceID?: string;
+        hint?: JSX.Element;
+        placeholders?: {
+          normal?: string[];
+          shell?: string[];
+        };
+      }) => JSX.Element;
+      if (!("Prompt" in api.ui)) return null;
+      const view = api.ui.Prompt;
+      if (typeof view !== "function") return null;
+      const Prompt = view as Prompt;
+      const normal = [
+        `[SMOKE] route check for ${input.label}`,
+        "[SMOKE] confirm home_prompt slot override",
+        "[SMOKE] verify api.ui.Prompt rendering",
+      ];
+      const shell = [
+        "printf '[SMOKE] home prompt\\n'",
+        "git status --short",
+        "bun --version",
+      ];
+      const Hint = (
+        <box flexShrink={0} flexDirection="row" gap={1}>
+          <text fg={skin.muted}>
+            <span style={{ fg: skin.accent }}>•</span> smoke home prompt
+          </text>
+        </box>
+      );
 
       return (
-        <box width="100%" maxWidth={75} alignItems="center" paddingTop={1} flexShrink={0} gap={1}>
+        <Prompt
+          workspaceID={value.workspace_id}
+          hint={Hint}
+          placeholders={{ normal, shell }}
+        />
+      );
+    },
+    home_bottom(ctx) {
+      const skin = look(ctx.theme.current);
+      const text = "extra content in the unified home bottom slot";
+
+      return (
+        <box
+          width="100%"
+          maxWidth={75}
+          alignItems="center"
+          paddingTop={1}
+          flexShrink={0}
+          gap={1}
+        >
           <box
             border
             borderColor={skin.border}
@@ -670,16 +838,21 @@ const home = (input: Cfg): TuiSlotPlugin => ({
             </text>
           </box>
         </box>
-      )
+      );
     },
   },
-})
+});
 
-const block = (input: Cfg, order: number, title: string, text: string): TuiSlotPlugin => ({
+const block = (
+  input: Cfg,
+  order: number,
+  title: string,
+  text: string,
+): TuiSlotPlugin => ({
   order,
   slots: {
     sidebar_content(ctx, value) {
-      const skin = look(ctx.theme.current)
+      const skin = look(ctx.theme.current);
 
       return (
         <box
@@ -701,20 +874,20 @@ const block = (input: Cfg, order: number, title: string, text: string): TuiSlotP
             {input.label} order {order} · session {value.session_id.slice(0, 8)}
           </text>
         </box>
-      )
+      );
     },
   },
-})
+});
 
-const slot = (input: Cfg): TuiSlotPlugin[] => [
-  home(input),
+const slot = (api: TuiPluginApi, input: Cfg): TuiSlotPlugin[] => [
+  home(api, input),
   block(input, 50, "Smoke above", "renders above internal sidebar blocks"),
   block(input, 250, "Smoke between", "renders between internal sidebar blocks"),
   block(input, 650, "Smoke below", "renders below internal sidebar blocks"),
-]
+];
 
 const reg = (api: TuiPluginApi, input: Cfg, keys: Keys) => {
-  const route = names(input)
+  const route = names(input);
   api.command.register(() => [
     {
       title: `${input.label} modal`,
@@ -725,7 +898,7 @@ const reg = (api: TuiPluginApi, input: Cfg, keys: Keys) => {
         name: "smoke",
       },
       onSelect: () => {
-        api.route.navigate(route.modal, { source: "command" })
+        api.route.navigate(route.modal, { source: "command" });
       },
     },
     {
@@ -737,7 +910,11 @@ const reg = (api: TuiPluginApi, input: Cfg, keys: Keys) => {
         name: "smoke-screen",
       },
       onSelect: () => {
-        api.route.navigate(route.screen, { source: "command", tab: 0, count: 0 })
+        api.route.navigate(route.screen, {
+          source: "command",
+          tab: 0,
+          count: 0,
+        });
       },
     },
     {
@@ -748,7 +925,7 @@ const reg = (api: TuiPluginApi, input: Cfg, keys: Keys) => {
         name: "smoke-alert",
       },
       onSelect: () => {
-        warn(api, route, current(api, route))
+        warn(api, route, current(api, route));
       },
     },
     {
@@ -759,7 +936,7 @@ const reg = (api: TuiPluginApi, input: Cfg, keys: Keys) => {
         name: "smoke-confirm",
       },
       onSelect: () => {
-        check(api, route, current(api, route))
+        check(api, route, current(api, route));
       },
     },
     {
@@ -770,7 +947,7 @@ const reg = (api: TuiPluginApi, input: Cfg, keys: Keys) => {
         name: "smoke-prompt",
       },
       onSelect: () => {
-        entry(api, route, current(api, route))
+        entry(api, route, current(api, route));
       },
     },
     {
@@ -781,7 +958,7 @@ const reg = (api: TuiPluginApi, input: Cfg, keys: Keys) => {
         name: "smoke-select",
       },
       onSelect: () => {
-        picker(api, route, current(api, route))
+        picker(api, route, current(api, route));
       },
     },
     {
@@ -792,7 +969,7 @@ const reg = (api: TuiPluginApi, input: Cfg, keys: Keys) => {
         name: "smoke-host",
       },
       onSelect: () => {
-        host(api, input, tone(api))
+        host(api, input, tone(api));
       },
     },
     {
@@ -801,7 +978,7 @@ const reg = (api: TuiPluginApi, input: Cfg, keys: Keys) => {
       category: "Plugin",
       enabled: api.route.current.name !== "home",
       onSelect: () => {
-        api.route.navigate("home")
+        api.route.navigate("home");
       },
     },
     {
@@ -814,48 +991,65 @@ const reg = (api: TuiPluginApi, input: Cfg, keys: Keys) => {
           title: "Smoke",
           message: "Plugin toast works",
           duration: 2000,
-        })
+        });
       },
     },
-  ])
-}
+  ]);
+};
 
 const tui: TuiPlugin = async (api, options, meta) => {
-  if (options?.enabled === false) return
+  if (options?.enabled === false) return;
 
-  await api.theme.install("./smoke-theme.json")
-  api.theme.set("smoke-theme")
+  await api.theme.install("./smoke-theme.json");
+  api.theme.set("smoke-theme");
 
-  const value = cfg(options ?? undefined)
-  const route = names(value)
-  const keys = api.keybind.create(bind, value.keybinds)
-  const fx = new VignetteEffect(value.vignette)
-  const post = fx.apply.bind(fx)
-  api.renderer.addPostProcessFn(post)
+  const value = cfg(options ?? undefined);
+  const route = names(value);
+  const keys = api.keybind.create(bind, value.keybinds);
+  const fx = new VignetteEffect(value.vignette);
+  const post = fx.apply.bind(fx);
+  api.renderer.addPostProcessFn(post);
   api.lifecycle.onDispose(() => {
-    api.renderer.removePostProcessFn(post)
-  })
+    api.renderer.removePostProcessFn(post);
+  });
 
   api.route.register([
     {
       name: route.screen,
-      render: ({ params }) => <Screen api={api} input={value} route={route} keys={keys} meta={meta} params={params} />,
+      render: ({ params }) => (
+        <Screen
+          api={api}
+          input={value}
+          route={route}
+          keys={keys}
+          meta={meta}
+          params={params}
+        />
+      ),
     },
     {
       name: route.modal,
-      render: ({ params }) => <Modal api={api} input={value} route={route} keys={keys} params={params} />,
+      render: ({ params }) => (
+        <Modal
+          api={api}
+          input={value}
+          route={route}
+          keys={keys}
+          params={params}
+        />
+      ),
     },
-  ])
+  ]);
 
-  reg(api, value, keys)
-  for (const item of slot(value)) {
-    api.slots.register(item)
+  reg(api, value, keys);
+  for (const item of slot(api, value)) {
+    api.slots.register(item);
   }
-}
+};
 
 const plugin: TuiPluginModule & { id: string } = {
   id: "tui-smoke",
   tui,
-}
+};
 
-export default plugin
+export default plugin;

@@ -6,7 +6,6 @@
     "./tui": {
       "import": "./index.tsx",
       "config": {
-        "enabled": true,
         "label": "smoke",
         "route": "workspace-smoke",
         "vignette": 0.35

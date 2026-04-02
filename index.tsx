@@ -1077,8 +1077,6 @@ const reg = (api: TuiPluginApi, input: Cfg, keys: Keys) => {
 }
 
 const tui: TuiPlugin = async (api, options, meta) => {
-  if (options?.enabled === false) return
-
   await api.theme.install("./smoke-theme.json")
   api.theme.set("smoke-theme")
 

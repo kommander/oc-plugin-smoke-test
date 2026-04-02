@@ -3,25 +3,29 @@
   "version": "0.0.8",
   "type": "module",
   "exports": {
-    ".": "./index.tsx",
-    "./tui": "./index.tsx"
+    "./tui": {
+      "import": "./index.tsx",
+      "config": {
+        "enabled": true,
+        "label": "smoke",
+        "route": "workspace-smoke",
+        "vignette": 0.35
+      }
+    }
   },
   "engines": {
-    "opencode": ">=1.3.0"
+    "opencode": ">=1.3.13"
   },
-  "oc-plugin": [
-    "tui"
-  ],
   "peerDependencies": {
-    "@opencode-ai/plugin": "^1.3.7",
-    "@opentui/core": ">=0.1.92",
-    "@opentui/solid": ">=0.1.92",
+    "@opencode-ai/plugin": "^1.3.13",
+    "@opentui/core": ">=0.1.96",
+    "@opentui/solid": ">=0.1.96",
     "solid-js": "^1.9.11"
   },
   "devDependencies": {
-    "@opencode-ai/plugin": "^1.3.7",
-    "@opentui/core": "0.1.92",
-    "@opentui/solid": "0.1.92",
+    "@opencode-ai/plugin": "^1.3.13",
+    "@opentui/core": "0.1.96",
+    "@opentui/solid": "0.1.96",
     "solid-js": "1.9.11",
     "@types/bun": "latest",
     "typescript": "^5"

@@ -1,6 +1,6 @@
 /** @jsxImportSource @opentui/solid */
-import { useKeyboard, useTerminalDimensions, type JSX } from "@opentui/solid";
-import { RGBA, VignetteEffect } from "@opentui/core";
+import { useKeyboard, useTerminalDimensions, type JSX } from "@opentui/solid"
+import { RGBA, VignetteEffect } from "@opentui/core"
 import type {
   TuiKeybindSet,
   TuiPlugin,
@@ -8,9 +8,9 @@ import type {
   TuiPluginMeta,
   TuiPluginModule,
   TuiSlotPlugin,
-} from "@opencode-ai/plugin/tui";
+} from "@opencode-ai/plugin/tui"
 
-const tabs = ["overview", "counter", "help"];
+const tabs = ["overview", "counter", "help"]
 const bind = {
   modal: "ctrl+shift+m",
   screen: "ctrl+shift+o",
@@ -30,44 +30,44 @@ const bind = {
   local_push: "enter,return",
   local_close: "q,backspace",
   host: "z",
-};
+}
 
 const pick = (value: unknown, fallback: string) => {
-  if (typeof value !== "string") return fallback;
-  if (!value.trim()) return fallback;
-  return value;
-};
+  if (typeof value !== "string") return fallback
+  if (!value.trim()) return fallback
+  return value
+}
 
 const num = (value: unknown, fallback: number) => {
-  if (typeof value !== "number") return fallback;
-  return value;
-};
+  if (typeof value !== "number") return fallback
+  return value
+}
 
 const rec = (value: unknown) => {
-  if (!value || typeof value !== "object" || Array.isArray(value)) return;
-  return Object.fromEntries(Object.entries(value));
-};
+  if (!value || typeof value !== "object" || Array.isArray(value)) return
+  return Object.fromEntries(Object.entries(value))
+}
 
 type Cfg = {
-  label: string;
-  route: string;
-  vignette: number;
-  keybinds: Record<string, unknown> | undefined;
-};
+  label: string
+  route: string
+  vignette: number
+  keybinds: Record<string, unknown> | undefined
+}
 
 type Route = {
-  modal: string;
-  screen: string;
-};
+  modal: string
+  screen: string
+}
 
 type State = {
-  tab: number;
-  count: number;
-  source: string;
-  note: string;
-  selected: string;
-  local: number;
-};
+  tab: number
+  count: number
+  source: string
+  note: string
+  selected: string
+  local: number
+}
 
 const cfg = (options: Record<string, unknown> | undefined) => {
   return {
@@ -75,37 +75,37 @@ const cfg = (options: Record<string, unknown> | undefined) => {
     route: pick(options?.route, "workspace-smoke"),
     vignette: Math.max(0, num(options?.vignette, 0.35)),
     keybinds: rec(options?.keybinds),
-  };
-};
+  }
+}
 
 const names = (input: Cfg) => {
   return {
     modal: `${input.route}.modal`,
     screen: `${input.route}.screen`,
-  };
-};
+  }
+}
 
-type Keys = TuiKeybindSet;
+type Keys = TuiKeybindSet
 const ui = {
   panel: "#1d1d1d",
   border: "#4a4a4a",
   text: "#f0f0f0",
   muted: "#a5a5a5",
   accent: "#5f87ff",
-};
+}
 
-type Color = RGBA | string;
+type Color = RGBA | string
 
 const ink = (
   map: Record<string, unknown>,
   name: string,
   fallback: string,
 ): Color => {
-  const value = map[name];
-  if (typeof value === "string") return value;
-  if (value instanceof RGBA) return value;
-  return fallback;
-};
+  const value = map[name]
+  if (typeof value === "string") return value
+  if (value instanceof RGBA) return value
+  return fallback
+}
 
 const look = (map: Record<string, unknown>) => {
   return {
@@ -115,32 +115,32 @@ const look = (map: Record<string, unknown>) => {
     muted: ink(map, "textMuted", ui.muted),
     accent: ink(map, "primary", ui.accent),
     selected: ink(map, "selectedListItemText", ui.text),
-  };
-};
+  }
+}
 
 const tone = (api: TuiPluginApi) => {
-  return look(api.theme.current);
-};
+  return look(api.theme.current)
+}
 
 type Skin = {
-  panel: Color;
-  border: Color;
-  text: Color;
-  muted: Color;
-  accent: Color;
-  selected: Color;
-};
+  panel: Color
+  border: Color
+  text: Color
+  muted: Color
+  accent: Color
+  selected: Color
+}
 
 const Btn = (props: {
-  txt: string;
-  run: () => void;
-  skin: Skin;
-  on?: boolean;
+  txt: string
+  run: () => void
+  skin: Skin
+  on?: boolean
 }) => {
   return (
     <box
       onMouseUp={() => {
-        props.run();
+        props.run()
       }}
       backgroundColor={props.on ? props.skin.accent : props.skin.border}
       paddingLeft={1}
@@ -150,16 +150,16 @@ const Btn = (props: {
         {props.txt}
       </text>
     </box>
-  );
-};
+  )
+}
 
 const parse = (params: Record<string, unknown> | undefined) => {
-  const tab = typeof params?.tab === "number" ? params.tab : 0;
-  const count = typeof params?.count === "number" ? params.count : 0;
-  const source = typeof params?.source === "string" ? params.source : "unknown";
-  const note = typeof params?.note === "string" ? params.note : "";
-  const selected = typeof params?.selected === "string" ? params.selected : "";
-  const local = typeof params?.local === "number" ? params.local : 0;
+  const tab = typeof params?.tab === "number" ? params.tab : 0
+  const count = typeof params?.count === "number" ? params.count : 0
+  const source = typeof params?.source === "string" ? params.source : "unknown"
+  const note = typeof params?.note === "string" ? params.note : ""
+  const selected = typeof params?.selected === "string" ? params.selected : ""
+  const local = typeof params?.local === "number" ? params.local : 0
   return {
     tab: Math.max(0, Math.min(tab, tabs.length - 1)),
     count,
@@ -167,16 +167,16 @@ const parse = (params: Record<string, unknown> | undefined) => {
     note,
     selected,
     local: Math.max(0, local),
-  };
-};
+  }
+}
 
 const current = (api: TuiPluginApi, route: Route) => {
-  const value = api.route.current;
-  const ok = Object.values(route).includes(value.name);
-  if (!ok) return parse(undefined);
-  if (!("params" in value)) return parse(undefined);
-  return parse(value.params);
-};
+  const value = api.route.current
+  const ok = Object.values(route).includes(value.name)
+  if (!ok) return parse(undefined)
+  if (!("params" in value)) return parse(undefined)
+  return parse(value.params)
+}
 
 const opts = [
   {
@@ -194,10 +194,10 @@ const opts = [
     value: 2,
     description: "Switch to help tab",
   },
-];
+]
 
 const host = (api: TuiPluginApi, input: Cfg, skin: Skin) => {
-  api.ui.dialog.setSize("medium");
+  api.ui.dialog.setSize("medium")
   api.ui.dialog.replace(() => (
     <box
       paddingBottom={1}
@@ -217,12 +217,12 @@ const host = (api: TuiPluginApi, input: Cfg, skin: Skin) => {
         <Btn txt="close" run={() => api.ui.dialog.clear()} skin={skin} on />
       </box>
     </box>
-  ));
-};
+  ))
+}
 
 const warn = (api: TuiPluginApi, route: Route, value: State) => {
-  const DialogAlert = api.ui.DialogAlert;
-  api.ui.dialog.setSize("medium");
+  const DialogAlert = api.ui.DialogAlert
+  api.ui.dialog.setSize("medium")
   api.ui.dialog.replace(() => (
     <DialogAlert
       title="Smoke alert"
@@ -231,12 +231,12 @@ const warn = (api: TuiPluginApi, route: Route, value: State) => {
         api.route.navigate(route.screen, { ...value, source: "alert" })
       }
     />
-  ));
-};
+  ))
+}
 
 const check = (api: TuiPluginApi, route: Route, value: State) => {
-  const DialogConfirm = api.ui.DialogConfirm;
-  api.ui.dialog.setSize("medium");
+  const DialogConfirm = api.ui.DialogConfirm
+  api.ui.dialog.setSize("medium")
   api.ui.dialog.replace(() => (
     <DialogConfirm
       title="Smoke confirm"
@@ -252,212 +252,212 @@ const check = (api: TuiPluginApi, route: Route, value: State) => {
         api.route.navigate(route.screen, { ...value, source: "confirm-cancel" })
       }
     />
-  ));
-};
+  ))
+}
 
 const entry = (api: TuiPluginApi, route: Route, value: State) => {
-  const DialogPrompt = api.ui.DialogPrompt;
-  api.ui.dialog.setSize("medium");
+  const DialogPrompt = api.ui.DialogPrompt
+  api.ui.dialog.setSize("medium")
   api.ui.dialog.replace(() => (
     <DialogPrompt
       title="Smoke prompt"
       value={value.note}
       onConfirm={(note) => {
-        api.ui.dialog.clear();
-        api.route.navigate(route.screen, { ...value, note, source: "prompt" });
+        api.ui.dialog.clear()
+        api.route.navigate(route.screen, { ...value, note, source: "prompt" })
       }}
       onCancel={() => {
-        api.ui.dialog.clear();
-        api.route.navigate(route.screen, value);
+        api.ui.dialog.clear()
+        api.route.navigate(route.screen, value)
       }}
     />
-  ));
-};
+  ))
+}
 
 const picker = (api: TuiPluginApi, route: Route, value: State) => {
-  const DialogSelect = api.ui.DialogSelect;
-  api.ui.dialog.setSize("medium");
+  const DialogSelect = api.ui.DialogSelect
+  api.ui.dialog.setSize("medium")
   api.ui.dialog.replace(() => (
     <DialogSelect
       title="Smoke select"
       options={opts}
       current={value.tab}
       onSelect={(item) => {
-        api.ui.dialog.clear();
+        api.ui.dialog.clear()
         api.route.navigate(route.screen, {
           ...value,
           tab: typeof item.value === "number" ? item.value : value.tab,
           selected: item.title,
           source: "select",
-        });
+        })
       }}
     />
-  ));
-};
+  ))
+}
 
 const Screen = (props: {
-  api: TuiPluginApi;
-  input: Cfg;
-  route: Route;
-  keys: Keys;
-  meta: TuiPluginMeta;
-  params?: Record<string, unknown>;
+  api: TuiPluginApi
+  input: Cfg
+  route: Route
+  keys: Keys
+  meta: TuiPluginMeta
+  params?: Record<string, unknown>
 }) => {
-  const dim = useTerminalDimensions();
-  const value = parse(props.params);
-  const skin = tone(props.api);
+  const dim = useTerminalDimensions()
+  const value = parse(props.params)
+  const skin = tone(props.api)
   const set = (local: number, base?: State) => {
-    const next = base ?? current(props.api, props.route);
+    const next = base ?? current(props.api, props.route)
     props.api.route.navigate(props.route.screen, {
       ...next,
       local: Math.max(0, local),
       source: "local",
-    });
-  };
+    })
+  }
   const push = (base?: State) => {
-    const next = base ?? current(props.api, props.route);
-    set(next.local + 1, next);
-  };
+    const next = base ?? current(props.api, props.route)
+    set(next.local + 1, next)
+  }
   const open = () => {
-    const next = current(props.api, props.route);
-    if (next.local > 0) return;
-    set(1, next);
-  };
+    const next = current(props.api, props.route)
+    if (next.local > 0) return
+    set(1, next)
+  }
   const pop = (base?: State) => {
-    const next = base ?? current(props.api, props.route);
-    const local = Math.max(0, next.local - 1);
-    set(local, next);
-  };
+    const next = base ?? current(props.api, props.route)
+    const local = Math.max(0, next.local - 1)
+    set(local, next)
+  }
   const show = () => {
     setTimeout(() => {
-      open();
-    }, 0);
-  };
+      open()
+    }, 0)
+  }
   useKeyboard((evt) => {
-    if (props.api.route.current.name !== props.route.screen) return;
-    const next = current(props.api, props.route);
+    if (props.api.route.current.name !== props.route.screen) return
+    const next = current(props.api, props.route)
     if (props.api.ui.dialog.open) {
       if (props.keys.match("dialog_close", evt)) {
-        evt.preventDefault();
-        evt.stopPropagation();
-        props.api.ui.dialog.clear();
-        return;
+        evt.preventDefault()
+        evt.stopPropagation()
+        props.api.ui.dialog.clear()
+        return
       }
-      return;
+      return
     }
 
     if (next.local > 0) {
       if (evt.name === "escape" || props.keys.match("local_close", evt)) {
-        evt.preventDefault();
-        evt.stopPropagation();
-        pop(next);
-        return;
+        evt.preventDefault()
+        evt.stopPropagation()
+        pop(next)
+        return
       }
 
       if (props.keys.match("local_push", evt)) {
-        evt.preventDefault();
-        evt.stopPropagation();
-        push(next);
-        return;
+        evt.preventDefault()
+        evt.stopPropagation()
+        push(next)
+        return
       }
-      return;
+      return
     }
 
     if (props.keys.match("home", evt)) {
-      evt.preventDefault();
-      evt.stopPropagation();
-      props.api.route.navigate("home");
-      return;
+      evt.preventDefault()
+      evt.stopPropagation()
+      props.api.route.navigate("home")
+      return
     }
 
     if (props.keys.match("left", evt)) {
-      evt.preventDefault();
-      evt.stopPropagation();
+      evt.preventDefault()
+      evt.stopPropagation()
       props.api.route.navigate(props.route.screen, {
         ...next,
         tab: (next.tab - 1 + tabs.length) % tabs.length,
-      });
-      return;
+      })
+      return
     }
 
     if (props.keys.match("right", evt)) {
-      evt.preventDefault();
-      evt.stopPropagation();
+      evt.preventDefault()
+      evt.stopPropagation()
       props.api.route.navigate(props.route.screen, {
         ...next,
         tab: (next.tab + 1) % tabs.length,
-      });
-      return;
+      })
+      return
     }
 
     if (props.keys.match("up", evt)) {
-      evt.preventDefault();
-      evt.stopPropagation();
+      evt.preventDefault()
+      evt.stopPropagation()
       props.api.route.navigate(props.route.screen, {
         ...next,
         count: next.count + 1,
-      });
-      return;
+      })
+      return
     }
 
     if (props.keys.match("down", evt)) {
-      evt.preventDefault();
-      evt.stopPropagation();
+      evt.preventDefault()
+      evt.stopPropagation()
       props.api.route.navigate(props.route.screen, {
         ...next,
         count: next.count - 1,
-      });
-      return;
+      })
+      return
     }
 
     if (props.keys.match("modal", evt)) {
-      evt.preventDefault();
-      evt.stopPropagation();
-      props.api.route.navigate(props.route.modal, next);
-      return;
+      evt.preventDefault()
+      evt.stopPropagation()
+      props.api.route.navigate(props.route.modal, next)
+      return
     }
 
     if (props.keys.match("local", evt)) {
-      evt.preventDefault();
-      evt.stopPropagation();
-      open();
-      return;
+      evt.preventDefault()
+      evt.stopPropagation()
+      open()
+      return
     }
 
     if (props.keys.match("host", evt)) {
-      evt.preventDefault();
-      evt.stopPropagation();
-      host(props.api, props.input, skin);
-      return;
+      evt.preventDefault()
+      evt.stopPropagation()
+      host(props.api, props.input, skin)
+      return
     }
 
     if (props.keys.match("alert", evt)) {
-      evt.preventDefault();
-      evt.stopPropagation();
-      warn(props.api, props.route, next);
-      return;
+      evt.preventDefault()
+      evt.stopPropagation()
+      warn(props.api, props.route, next)
+      return
     }
 
     if (props.keys.match("confirm", evt)) {
-      evt.preventDefault();
-      evt.stopPropagation();
-      check(props.api, props.route, next);
-      return;
+      evt.preventDefault()
+      evt.stopPropagation()
+      check(props.api, props.route, next)
+      return
     }
 
     if (props.keys.match("prompt", evt)) {
-      evt.preventDefault();
-      evt.stopPropagation();
-      entry(props.api, props.route, next);
-      return;
+      evt.preventDefault()
+      evt.stopPropagation()
+      entry(props.api, props.route, next)
+      return
     }
 
     if (props.keys.match("select", evt)) {
-      evt.preventDefault();
-      evt.stopPropagation();
-      picker(props.api, props.route, next);
+      evt.preventDefault()
+      evt.stopPropagation()
+      picker(props.api, props.route, next)
     }
-  });
+  })
 
   return (
     <box
@@ -489,7 +489,7 @@ const Screen = (props: {
 
         <box flexDirection="row" gap={1} paddingBottom={1}>
           {tabs.map((item, i) => {
-            const on = value.tab === i;
+            const on = value.tab === i
             return (
               <Btn
                 txt={item}
@@ -502,7 +502,7 @@ const Screen = (props: {
                 skin={skin}
                 on={on}
               />
-            );
+            )
           })}
         </box>
 
@@ -623,12 +623,12 @@ const Screen = (props: {
         top={0}
         backgroundColor={RGBA.fromInts(0, 0, 0, 160)}
         onMouseUp={() => {
-          pop();
+          pop()
         }}
       >
         <box
           onMouseUp={(evt) => {
-            evt.stopPropagation();
+            evt.stopPropagation()
           }}
           width={60}
           maxWidth={dim().width - 2}
@@ -657,39 +657,39 @@ const Screen = (props: {
         </box>
       </box>
     </box>
-  );
-};
+  )
+}
 
 const Modal = (props: {
-  api: TuiPluginApi;
-  input: Cfg;
-  route: Route;
-  keys: Keys;
-  params?: Record<string, unknown>;
+  api: TuiPluginApi
+  input: Cfg
+  route: Route
+  keys: Keys
+  params?: Record<string, unknown>
 }) => {
-  const Dialog = props.api.ui.Dialog;
-  const value = parse(props.params);
-  const skin = tone(props.api);
+  const Dialog = props.api.ui.Dialog
+  const value = parse(props.params)
+  const skin = tone(props.api)
 
   useKeyboard((evt) => {
-    if (props.api.route.current.name !== props.route.modal) return;
+    if (props.api.route.current.name !== props.route.modal) return
 
     if (props.keys.match("modal_accept", evt)) {
-      evt.preventDefault();
-      evt.stopPropagation();
+      evt.preventDefault()
+      evt.stopPropagation()
       props.api.route.navigate(props.route.screen, {
         ...value,
         source: "modal",
-      });
-      return;
+      })
+      return
     }
 
     if (props.keys.match("modal_close", evt)) {
-      evt.preventDefault();
-      evt.stopPropagation();
-      props.api.route.navigate("home");
+      evt.preventDefault()
+      evt.stopPropagation()
+      props.api.route.navigate("home")
     }
-  });
+  })
 
   return (
     <box width="100%" height="100%" backgroundColor={skin.panel}>
@@ -733,115 +733,194 @@ const Modal = (props: {
         </box>
       </Dialog>
     </box>
-  );
-};
+  )
+}
 
-const home = (api: TuiPluginApi, input: Cfg): TuiSlotPlugin => ({
-  slots: {
-    home_logo(ctx) {
-      const map = ctx.theme.current;
-      const skin = look(map);
-      const art = [
-        "                                  $$\\",
-        "                                  $$ |",
-        " $$$$$$$\\ $$$$$$\\$$$$\\   $$$$$$\\  $$ |  $$\\  $$$$$$\\",
-        "$$  _____|$$  _$$  _$$\\ $$  __$$\\ $$ | $$  |$$  __$$\\",
-        "\\$$$$$$\\  $$ / $$ / $$ |$$ /  $$ |$$$$$$  / $$$$$$$$ |",
-        " \\____$$\\ $$ | $$ | $$ |$$ |  $$ |$$  _$$<  $$   ____|",
-        "$$$$$$$  |$$ | $$ | $$ |\\$$$$$$  |$$ | \\$$\\ \\$$$$$$$\\",
-        "\\_______/ \\__| \\__| \\__| \\______/ \\__|  \\__| \\_______|",
-      ];
-      const fill = [
-        skin.accent,
-        skin.muted,
-        ink(map, "info", ui.accent),
-        skin.text,
-        ink(map, "success", ui.accent),
-        ink(map, "warning", ui.accent),
-        ink(map, "secondary", ui.accent),
-        ink(map, "error", ui.accent),
-      ];
+type Ctx = {
+  theme: {
+    current: Record<string, unknown>
+  }
+}
 
-      return (
-        <box flexDirection="column">
-          {art.map((line, i) => (
-            <text fg={fill[i]}>{line}</text>
-          ))}
-        </box>
-      );
-    },
-    home_prompt(ctx, value) {
-      const skin = look(ctx.theme.current);
-      type Prompt = (props: {
-        workspaceID?: string;
-        hint?: JSX.Element;
-        placeholders?: {
-          normal?: string[];
-          shell?: string[];
-        };
-      }) => JSX.Element;
-      if (!("Prompt" in api.ui)) return null;
-      const view = api.ui.Prompt;
-      if (typeof view !== "function") return null;
-      const Prompt = view as Prompt;
-      const normal = [
-        `[SMOKE] route check for ${input.label}`,
-        "[SMOKE] confirm home_prompt slot override",
-        "[SMOKE] verify api.ui.Prompt rendering",
-      ];
-      const shell = [
-        "printf '[SMOKE] home prompt\\n'",
-        "git status --short",
-        "bun --version",
-      ];
-      const Hint = (
-        <box flexShrink={0} flexDirection="row" gap={1}>
-          <text fg={skin.muted}>
-            <span style={{ fg: skin.accent }}>•</span> smoke home prompt
-          </text>
-        </box>
-      );
+type HomeRight = {
+  workspace_id?: string
+}
 
-      return (
-        <Prompt
-          workspaceID={value.workspace_id}
-          hint={Hint}
-          placeholders={{ normal, shell }}
-        />
-      );
-    },
-    home_bottom(ctx) {
-      const skin = look(ctx.theme.current);
-      const text = "extra content in the unified home bottom slot";
+type SessionRight = {
+  session_id: string
+}
 
-      return (
-        <box
-          width="100%"
-          maxWidth={75}
-          alignItems="center"
-          paddingTop={1}
-          flexShrink={0}
-          gap={1}
-        >
-          <box
-            border
-            borderColor={skin.border}
-            backgroundColor={skin.panel}
-            paddingTop={1}
-            paddingBottom={1}
-            paddingLeft={2}
-            paddingRight={2}
-            width="100%"
-          >
+type SmokeRight = {
+  workspace_id?: string
+  label?: string
+}
+
+const home = (api: TuiPluginApi, input: Cfg): TuiSlotPlugin =>
+  ({
+    slots: {
+      home_logo(ctx: Ctx) {
+        const map = ctx.theme.current
+        const skin = look(map)
+        const art = [
+          "                                  $$\\",
+          "                                  $$ |",
+          " $$$$$$$\\ $$$$$$\\$$$$\\   $$$$$$\\  $$ |  $$\\  $$$$$$\\",
+          "$$  _____|$$  _$$  _$$\\ $$  __$$\\ $$ | $$  |$$  __$$\\",
+          "\\$$$$$$\\  $$ / $$ / $$ |$$ /  $$ |$$$$$$  / $$$$$$$$ |",
+          " \\____$$\\ $$ | $$ | $$ |$$ |  $$ |$$  _$$<  $$   ____|",
+          "$$$$$$$  |$$ | $$ | $$ |\\$$$$$$  |$$ | \\$$\\ \\$$$$$$$\\",
+          "\\_______/ \\__| \\__| \\__| \\______/ \\__|  \\__| \\_______|",
+        ]
+        const fill = [
+          skin.accent,
+          skin.muted,
+          ink(map, "info", ui.accent),
+          skin.text,
+          ink(map, "success", ui.accent),
+          ink(map, "warning", ui.accent),
+          ink(map, "secondary", ui.accent),
+          ink(map, "error", ui.accent),
+        ]
+
+        return (
+          <box flexDirection="column">
+            {art.map((line, i) => (
+              <text fg={fill[i]}>{line}</text>
+            ))}
+          </box>
+        )
+      },
+      home_prompt(ctx: Ctx, value: HomeRight) {
+        const skin = look(ctx.theme.current)
+        type Prompt = (props: {
+          workspaceID?: string
+          visible?: boolean
+          disabled?: boolean
+          onSubmit?: () => void
+          hint?: JSX.Element
+          right?: JSX.Element
+          showPlaceholder?: boolean
+          placeholders?: {
+            normal?: string[]
+            shell?: string[]
+          }
+        }) => JSX.Element
+        type Slot = (
+          props: {
+            name: string
+            mode?: unknown
+            children?: JSX.Element
+          } & Record<string, unknown>,
+        ) => JSX.Element | null
+        const ui = api.ui as TuiPluginApi["ui"] & {
+          Prompt: Prompt
+          Slot: Slot
+        }
+        const Prompt = ui.Prompt
+        const Slot = ui.Slot
+        const normal = [
+          `[SMOKE] route check for ${input.label}`,
+          "[SMOKE] confirm home_prompt slot override",
+          "[SMOKE] verify prompt-right slot passthrough",
+        ]
+        const shell = [
+          "printf '[SMOKE] home prompt\n'",
+          "git status --short",
+          "bun --version",
+        ]
+        const hint = (
+          <box flexShrink={0} flexDirection="row" gap={1}>
             <text fg={skin.muted}>
-              <span style={{ fg: skin.accent }}>{input.label}</span> {text}
+              <span style={{ fg: skin.accent }}>•</span> smoke home prompt
             </text>
           </box>
-        </box>
-      );
+        )
+
+        return (
+          <Prompt
+            workspaceID={value.workspace_id}
+            hint={hint}
+            right={
+              <box flexDirection="row" gap={1}>
+                <Slot
+                  name="home_prompt_right"
+                  workspace_id={value.workspace_id}
+                />
+                <Slot
+                  name="smoke_prompt_right"
+                  workspace_id={value.workspace_id}
+                  label={input.label}
+                />
+              </box>
+            }
+            placeholders={{ normal, shell }}
+          />
+        )
+      },
+      home_prompt_right(ctx: Ctx, value: HomeRight) {
+        const skin = look(ctx.theme.current)
+        const id = value.workspace_id?.slice(0, 8) ?? "none"
+        return (
+          <text fg={skin.muted}>
+            <span style={{ fg: skin.accent }}>{input.label}</span> home:{id}
+          </text>
+        )
+      },
+      session_prompt_right(ctx: Ctx, value: SessionRight) {
+        const skin = look(ctx.theme.current)
+        return (
+          <text fg={skin.muted}>
+            <span style={{ fg: skin.accent }}>{input.label}</span> session:
+            {value.session_id.slice(0, 8)}
+          </text>
+        )
+      },
+      smoke_prompt_right(ctx: Ctx, value: SmokeRight) {
+        const skin = look(ctx.theme.current)
+        const id =
+          typeof value.workspace_id === "string"
+            ? value.workspace_id.slice(0, 8)
+            : "none"
+        const label =
+          typeof value.label === "string" ? value.label : input.label
+        return (
+          <text fg={skin.muted}>
+            <span style={{ fg: skin.accent }}>{label}</span> custom:{id}
+          </text>
+        )
+      },
+      home_bottom(ctx: Ctx) {
+        const skin = look(ctx.theme.current)
+        const text = "extra content in the unified home bottom slot"
+
+        return (
+          <box
+            width="100%"
+            maxWidth={75}
+            alignItems="center"
+            paddingTop={1}
+            flexShrink={0}
+            gap={1}
+          >
+            <box
+              border
+              borderColor={skin.border}
+              backgroundColor={skin.panel}
+              paddingTop={1}
+              paddingBottom={1}
+              paddingLeft={2}
+              paddingRight={2}
+              width="100%"
+            >
+              <text fg={skin.muted}>
+                <span style={{ fg: skin.accent }}>{input.label}</span> {text}
+              </text>
+            </box>
+          </box>
+        )
+      },
     },
-  },
-});
+  }) as TuiSlotPlugin
 
 const block = (
   input: Cfg,
@@ -852,7 +931,7 @@ const block = (
   order,
   slots: {
     sidebar_content(ctx, value) {
-      const skin = look(ctx.theme.current);
+      const skin = look(ctx.theme.current)
 
       return (
         <box
@@ -874,20 +953,20 @@ const block = (
             {input.label} order {order} · session {value.session_id.slice(0, 8)}
           </text>
         </box>
-      );
+      )
     },
   },
-});
+})
 
 const slot = (api: TuiPluginApi, input: Cfg): TuiSlotPlugin[] => [
   home(api, input),
   block(input, 50, "Smoke above", "renders above internal sidebar blocks"),
   block(input, 250, "Smoke between", "renders between internal sidebar blocks"),
   block(input, 650, "Smoke below", "renders below internal sidebar blocks"),
-];
+]
 
 const reg = (api: TuiPluginApi, input: Cfg, keys: Keys) => {
-  const route = names(input);
+  const route = names(input)
   api.command.register(() => [
     {
       title: `${input.label} modal`,
@@ -898,7 +977,7 @@ const reg = (api: TuiPluginApi, input: Cfg, keys: Keys) => {
         name: "smoke",
       },
       onSelect: () => {
-        api.route.navigate(route.modal, { source: "command" });
+        api.route.navigate(route.modal, { source: "command" })
       },
     },
     {
@@ -914,7 +993,7 @@ const reg = (api: TuiPluginApi, input: Cfg, keys: Keys) => {
           source: "command",
           tab: 0,
           count: 0,
-        });
+        })
       },
     },
     {
@@ -925,7 +1004,7 @@ const reg = (api: TuiPluginApi, input: Cfg, keys: Keys) => {
         name: "smoke-alert",
       },
       onSelect: () => {
-        warn(api, route, current(api, route));
+        warn(api, route, current(api, route))
       },
     },
     {
@@ -936,7 +1015,7 @@ const reg = (api: TuiPluginApi, input: Cfg, keys: Keys) => {
         name: "smoke-confirm",
       },
       onSelect: () => {
-        check(api, route, current(api, route));
+        check(api, route, current(api, route))
       },
     },
     {
@@ -947,7 +1026,7 @@ const reg = (api: TuiPluginApi, input: Cfg, keys: Keys) => {
         name: "smoke-prompt",
       },
       onSelect: () => {
-        entry(api, route, current(api, route));
+        entry(api, route, current(api, route))
       },
     },
     {
@@ -958,7 +1037,7 @@ const reg = (api: TuiPluginApi, input: Cfg, keys: Keys) => {
         name: "smoke-select",
       },
       onSelect: () => {
-        picker(api, route, current(api, route));
+        picker(api, route, current(api, route))
       },
     },
     {
@@ -969,7 +1048,7 @@ const reg = (api: TuiPluginApi, input: Cfg, keys: Keys) => {
         name: "smoke-host",
       },
       onSelect: () => {
-        host(api, input, tone(api));
+        host(api, input, tone(api))
       },
     },
     {
@@ -978,7 +1057,7 @@ const reg = (api: TuiPluginApi, input: Cfg, keys: Keys) => {
       category: "Plugin",
       enabled: api.route.current.name !== "home",
       onSelect: () => {
-        api.route.navigate("home");
+        api.route.navigate("home")
       },
     },
     {
@@ -991,25 +1070,27 @@ const reg = (api: TuiPluginApi, input: Cfg, keys: Keys) => {
           title: "Smoke",
           message: "Plugin toast works",
           duration: 2000,
-        });
+        })
       },
     },
-  ]);
-};
+  ])
+}
 
 const tui: TuiPlugin = async (api, options, meta) => {
-  await api.theme.install("./smoke-theme.json");
-  api.theme.set("smoke-theme");
+  if (options?.enabled === false) return
 
-  const value = cfg(options ?? undefined);
-  const route = names(value);
-  const keys = api.keybind.create(bind, value.keybinds);
-  const fx = new VignetteEffect(value.vignette);
-  const post = fx.apply.bind(fx);
-  api.renderer.addPostProcessFn(post);
+  await api.theme.install("./smoke-theme.json")
+  api.theme.set("smoke-theme")
+
+  const value = cfg(options ?? undefined)
+  const route = names(value)
+  const keys = api.keybind.create(bind, value.keybinds)
+  const fx = new VignetteEffect(value.vignette)
+  const post = fx.apply.bind(fx)
+  api.renderer.addPostProcessFn(post)
   api.lifecycle.onDispose(() => {
-    api.renderer.removePostProcessFn(post);
-  });
+    api.renderer.removePostProcessFn(post)
+  })
 
   api.route.register([
     {
@@ -1037,17 +1118,17 @@ const tui: TuiPlugin = async (api, options, meta) => {
         />
       ),
     },
-  ]);
+  ])
 
-  reg(api, value, keys);
+  reg(api, value, keys)
   for (const item of slot(api, value)) {
-    api.slots.register(item);
+    api.slots.register(item)
   }
-};
+}
 
 const plugin: TuiPluginModule & { id: string } = {
   id: "oc-plugin-smoke-test",
   tui,
-};
+}
 
-export default plugin;
+export default plugin

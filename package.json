@@ -2,6 +2,10 @@
   "name": "oc-plugin-smoke-test",
   "version": "0.0.8",
   "type": "module",
+  "scripts": {
+    "fmt": "oxfmt --write .",
+    "fmt:check": "oxfmt --check ."
+  },
   "exports": {
     "./tui": {
       "import": "./index.tsx",
@@ -27,6 +31,7 @@
     "@opentui/solid": "0.1.96",
     "solid-js": "1.9.11",
     "@types/bun": "latest",
-    "typescript": "^5"
+    "typescript": "^5",
+    "oxfmt": "0.41.0"
   }
 }

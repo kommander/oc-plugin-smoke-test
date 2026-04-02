@@ -96,11 +96,7 @@ const ui = {
 
 type Color = RGBA | string
 
-const ink = (
-  map: Record<string, unknown>,
-  name: string,
-  fallback: string,
-): Color => {
+const ink = (map: Record<string, unknown>, name: string, fallback: string): Color => {
   const value = map[name]
   if (typeof value === "string") return value
   if (value instanceof RGBA) return value
@@ -131,12 +127,7 @@ type Skin = {
   selected: Color
 }
 
-const Btn = (props: {
-  txt: string
-  run: () => void
-  skin: Skin
-  on?: boolean
-}) => {
+const Btn = (props: { txt: string; run: () => void; skin: Skin; on?: boolean }) => {
   return (
     <box
       onMouseUp={() => {
@@ -146,9 +137,7 @@ const Btn = (props: {
       paddingLeft={1}
       paddingRight={1}
     >
-      <text fg={props.on ? props.skin.selected : props.skin.text}>
-        {props.txt}
-      </text>
+      <text fg={props.on ? props.skin.selected : props.skin.text}>{props.txt}</text>
     </box>
   )
 }
@@ -199,19 +188,11 @@ const opts = [
 const host = (api: TuiPluginApi, input: Cfg, skin: Skin) => {
   api.ui.dialog.setSize("medium")
   api.ui.dialog.replace(() => (
-    <box
-      paddingBottom={1}
-      paddingLeft={2}
-      paddingRight={2}
-      gap={1}
-      flexDirection="column"
-    >
+    <box paddingBottom={1} paddingLeft={2} paddingRight={2} gap={1} flexDirection="column">
       <text fg={skin.text}>
         <b>{input.label} host overlay</b>
       </text>
-      <text fg={skin.muted}>
-        Using api.ui.dialog stack with built-in backdrop
-      </text>
+      <text fg={skin.muted}>Using api.ui.dialog stack with built-in backdrop</text>
       <text fg={skin.muted}>esc closes · depth {api.ui.dialog.depth}</text>
       <box flexDirection="row" gap={1}>
         <Btn txt="close" run={() => api.ui.dialog.clear()} skin={skin} on />
@@ -227,9 +208,7 @@ const warn = (api: TuiPluginApi, route: Route, value: State) => {
     <DialogAlert
       title="Smoke alert"
       message="Testing built-in alert dialog"
-      onConfirm={() =>
-        api.route.navigate(route.screen, { ...value, source: "alert" })
-      }
+      onConfirm={() => api.route.navigate(route.screen, { ...value, source: "alert" })}
     />
   ))
 }
@@ -248,9 +227,7 @@ const check = (api: TuiPluginApi, route: Route, value: State) => {
           source: "confirm",
         })
       }
-      onCancel={() =>
-        api.route.navigate(route.screen, { ...value, source: "confirm-cancel" })
-      }
+      onCancel={() => api.route.navigate(route.screen, { ...value, source: "confirm-cancel" })}
     />
   ))
 }
@@ -460,12 +437,7 @@ const Screen = (props: {
   })
 
   return (
-    <box
-      width={dim().width}
-      height={dim().height}
-      backgroundColor={skin.panel}
-      position="relative"
-    >
+    <box width={dim().width} height={dim().height} backgroundColor={skin.panel} position="relative">
       <box
         flexDirection="column"
         width="100%"
@@ -475,11 +447,7 @@ const Screen = (props: {
         paddingLeft={2}
         paddingRight={2}
       >
-        <box
-          flexDirection="row"
-          justifyContent="space-between"
-          paddingBottom={1}
-        >
+        <box flexDirection="row" justifyContent="space-between" paddingBottom={1}>
           <text fg={skin.text}>
             <b>{props.input.label} screen</b>
             <span style={{ fg: skin.muted }}> plugin route</span>
@@ -521,19 +489,14 @@ const Screen = (props: {
               <text fg={skin.muted}>plugin state: {props.meta.state}</text>
               <text fg={skin.muted}>
                 first: {props.meta.state === "first" ? "yes" : "no"} · updated:{" "}
-                {props.meta.state === "updated" ? "yes" : "no"} · loads:{" "}
-                {props.meta.load_count}
+                {props.meta.state === "updated" ? "yes" : "no"} · loads: {props.meta.load_count}
               </text>
               <text fg={skin.muted}>plugin source: {props.meta.source}</text>
               <text fg={skin.muted}>source: {value.source}</text>
               <text fg={skin.muted}>note: {value.note || "(none)"}</text>
-              <text fg={skin.muted}>
-                selected: {value.selected || "(none)"}
-              </text>
+              <text fg={skin.muted}>selected: {value.selected || "(none)"}</text>
               <text fg={skin.muted}>local stack depth: {value.local}</text>
-              <text fg={skin.muted}>
-                host stack open: {props.api.ui.dialog.open ? "yes" : "no"}
-              </text>
+              <text fg={skin.muted}>host stack open: {props.api.ui.dialog.open ? "yes" : "no"}</text>
             </box>
           ) : null}
 
@@ -541,8 +504,7 @@ const Screen = (props: {
             <box flexDirection="column" gap={1}>
               <text fg={skin.text}>Counter: {value.count}</text>
               <text fg={skin.muted}>
-                {props.keys.print("up")} / {props.keys.print("down")} change
-                value
+                {props.keys.print("up")} / {props.keys.print("down")} change value
               </text>
             </box>
           ) : null}
@@ -550,64 +512,30 @@ const Screen = (props: {
           {value.tab === 2 ? (
             <box flexDirection="column" gap={1}>
               <text fg={skin.muted}>
-                {props.keys.print("modal")} modal | {props.keys.print("alert")}{" "}
-                alert | {props.keys.print("confirm")} confirm |{" "}
-                {props.keys.print("prompt")} prompt |{" "}
-                {props.keys.print("select")} select
+                {props.keys.print("modal")} modal | {props.keys.print("alert")} alert | {props.keys.print("confirm")}{" "}
+                confirm | {props.keys.print("prompt")} prompt | {props.keys.print("select")} select
               </text>
               <text fg={skin.muted}>
-                {props.keys.print("local")} local stack |{" "}
-                {props.keys.print("host")} host stack
+                {props.keys.print("local")} local stack | {props.keys.print("host")} host stack
               </text>
               <text fg={skin.muted}>
-                local open: {props.keys.print("local_push")} push nested · esc
-                or {props.keys.print("local_close")} close
+                local open: {props.keys.print("local_push")} push nested · esc or {props.keys.print("local_close")}{" "}
+                close
               </text>
-              <text fg={skin.muted}>
-                {props.keys.print("home")} returns home
-              </text>
+              <text fg={skin.muted}>{props.keys.print("home")} returns home</text>
             </box>
           ) : null}
         </box>
 
         <box flexDirection="row" gap={1} paddingTop={1}>
-          <Btn
-            txt="go home"
-            run={() => props.api.route.navigate("home")}
-            skin={skin}
-          />
-          <Btn
-            txt="modal"
-            run={() => props.api.route.navigate(props.route.modal, value)}
-            skin={skin}
-            on
-          />
+          <Btn txt="go home" run={() => props.api.route.navigate("home")} skin={skin} />
+          <Btn txt="modal" run={() => props.api.route.navigate(props.route.modal, value)} skin={skin} on />
           <Btn txt="local overlay" run={show} skin={skin} />
-          <Btn
-            txt="host overlay"
-            run={() => host(props.api, props.input, skin)}
-            skin={skin}
-          />
-          <Btn
-            txt="alert"
-            run={() => warn(props.api, props.route, value)}
-            skin={skin}
-          />
-          <Btn
-            txt="confirm"
-            run={() => check(props.api, props.route, value)}
-            skin={skin}
-          />
-          <Btn
-            txt="prompt"
-            run={() => entry(props.api, props.route, value)}
-            skin={skin}
-          />
-          <Btn
-            txt="select"
-            run={() => picker(props.api, props.route, value)}
-            skin={skin}
-          />
+          <Btn txt="host overlay" run={() => host(props.api, props.input, skin)} skin={skin} />
+          <Btn txt="alert" run={() => warn(props.api, props.route, value)} skin={skin} />
+          <Btn txt="confirm" run={() => check(props.api, props.route, value)} skin={skin} />
+          <Btn txt="prompt" run={() => entry(props.api, props.route, value)} skin={skin} />
+          <Btn txt="select" run={() => picker(props.api, props.route, value)} skin={skin} />
         </box>
       </box>
 
@@ -647,8 +575,7 @@ const Screen = (props: {
           </text>
           <text fg={skin.muted}>Plugin-owned stack depth: {value.local}</text>
           <text fg={skin.muted}>
-            {props.keys.print("local_push")} push nested ·{" "}
-            {props.keys.print("local_close")} pop/close
+            {props.keys.print("local_push")} push nested · {props.keys.print("local_close")} pop/close
           </text>
           <box flexDirection="row" gap={1}>
             <Btn txt="push" run={push} skin={skin} on />
@@ -694,23 +621,14 @@ const Modal = (props: {
   return (
     <box width="100%" height="100%" backgroundColor={skin.panel}>
       <Dialog onClose={() => props.api.route.navigate("home")}>
-        <box
-          paddingBottom={1}
-          paddingLeft={2}
-          paddingRight={2}
-          gap={1}
-          flexDirection="column"
-        >
+        <box paddingBottom={1} paddingLeft={2} paddingRight={2} gap={1} flexDirection="column">
           <text fg={skin.text}>
             <b>{props.input.label} modal</b>
           </text>
           <text fg={skin.muted}>{props.keys.print("modal")} modal command</text>
+          <text fg={skin.muted}>{props.keys.print("screen")} screen command</text>
           <text fg={skin.muted}>
-            {props.keys.print("screen")} screen command
-          </text>
-          <text fg={skin.muted}>
-            {props.keys.print("modal_accept")} opens screen ·{" "}
-            {props.keys.print("modal_close")} closes
+            {props.keys.print("modal_accept")} opens screen · {props.keys.print("modal_close")} closes
           </text>
           <box flexDirection="row" gap={1}>
             <Btn
@@ -724,11 +642,7 @@ const Modal = (props: {
               skin={skin}
               on
             />
-            <Btn
-              txt="cancel"
-              run={() => props.api.route.navigate("home")}
-              skin={skin}
-            />
+            <Btn txt="cancel" run={() => props.api.route.navigate("home")} skin={skin} />
           </box>
         </box>
       </Dialog>
@@ -823,11 +737,7 @@ const home = (api: TuiPluginApi, input: Cfg): TuiSlotPlugin =>
           "[SMOKE] confirm home_prompt slot override",
           "[SMOKE] verify prompt-right slot passthrough",
         ]
-        const shell = [
-          "printf '[SMOKE] home prompt\n'",
-          "git status --short",
-          "bun --version",
-        ]
+        const shell = ["printf '[SMOKE] home prompt\n'", "git status --short", "bun --version"]
         const hint = (
           <box flexShrink={0} flexDirection="row" gap={1}>
             <text fg={skin.muted}>
@@ -842,15 +752,8 @@ const home = (api: TuiPluginApi, input: Cfg): TuiSlotPlugin =>
             hint={hint}
             right={
               <box flexDirection="row" gap={1}>
-                <Slot
-                  name="home_prompt_right"
-                  workspace_id={value.workspace_id}
-                />
-                <Slot
-                  name="smoke_prompt_right"
-                  workspace_id={value.workspace_id}
-                  label={input.label}
-                />
+                <Slot name="home_prompt_right" workspace_id={value.workspace_id} />
+                <Slot name="smoke_prompt_right" workspace_id={value.workspace_id} label={input.label} />
               </box>
             }
             placeholders={{ normal, shell }}
@@ -877,12 +780,8 @@ const home = (api: TuiPluginApi, input: Cfg): TuiSlotPlugin =>
       },
       smoke_prompt_right(ctx: Ctx, value: SmokeRight) {
         const skin = look(ctx.theme.current)
-        const id =
-          typeof value.workspace_id === "string"
-            ? value.workspace_id.slice(0, 8)
-            : "none"
-        const label =
-          typeof value.label === "string" ? value.label : input.label
+        const id = typeof value.workspace_id === "string" ? value.workspace_id.slice(0, 8) : "none"
+        const label = typeof value.label === "string" ? value.label : input.label
         return (
           <text fg={skin.muted}>
             <span style={{ fg: skin.accent }}>{label}</span> custom:{id}
@@ -894,14 +793,7 @@ const home = (api: TuiPluginApi, input: Cfg): TuiSlotPlugin =>
         const text = "extra content in the unified home bottom slot"
 
         return (
-          <box
-            width="100%"
-            maxWidth={75}
-            alignItems="center"
-            paddingTop={1}
-            flexShrink={0}
-            gap={1}
-          >
+          <box width="100%" maxWidth={75} alignItems="center" paddingTop={1} flexShrink={0} gap={1}>
             <box
               border
               borderColor={skin.border}
@@ -922,12 +814,7 @@ const home = (api: TuiPluginApi, input: Cfg): TuiSlotPlugin =>
     },
   }) as TuiSlotPlugin
 
-const block = (
-  input: Cfg,
-  order: number,
-  title: string,
-  text: string,
-): TuiSlotPlugin => ({
+const block = (input: Cfg, order: number, title: string, text: string): TuiSlotPlugin => ({
   order,
   slots: {
     sidebar_content(ctx, value) {
@@ -1093,28 +980,11 @@ const tui: TuiPlugin = async (api, options, meta) => {
   api.route.register([
     {
       name: route.screen,
-      render: ({ params }) => (
-        <Screen
-          api={api}
-          input={value}
-          route={route}
-          keys={keys}
-          meta={meta}
-          params={params}
-        />
-      ),
+      render: ({ params }) => <Screen api={api} input={value} route={route} keys={keys} meta={meta} params={params} />,
     },
     {
       name: route.modal,
-      render: ({ params }) => (
-        <Modal
-          api={api}
-          input={value}
-          route={route}
-          keys={keys}
-          params={params}
-        />
-      ),
+      render: ({ params }) => <Modal api={api} input={value} route={route} keys={keys} params={params} />,
     },
   ])
 
